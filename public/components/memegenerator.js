@@ -3,6 +3,8 @@ Vue.component('memegenerator', {
     return {
       url: null,
       image: null,
+      top_text: "Top",
+      bottom_text: "Bottom",
     }
   },
   methods: {
@@ -16,7 +18,21 @@ Vue.component('memegenerator', {
      <v-row>
       <v-col cols="12" md="7">
          <v-card elevation="2">
-          <v-img :src="url" :lazy-src="url"></v-img>
+          <v-img :src="url" :lazy-src="url">
+
+            <v-container style="position:absolute;top:0px">
+              <v-row align="center" justify="space-around">
+                <div class="white--text mx-2">{{ top_text }}</div>
+              </v-row>
+            </v-container>
+
+            <v-container style="position:absolute;bottom:0px">
+              <v-row align="center" justify="space-around">
+                <div class="white--text mx-2">{{ bottom_text }}</div>
+              </v-row>
+            </v-container>
+
+          </v-img>
         </v-card>
       </v-col>
       <v-col cols="12" md="5">
