@@ -7,7 +7,34 @@ Vue.component('memegenerator', {
       bottomText: null,
       topSize: 20,
       bottomSize: 20,
+
+      topColor: '#000000FF',
+		  topMenu: false,
+      bottomColor: '#000000FF',
+      bottomMenu: false,
     }
+  },
+  computed: {
+  topSwatchStyle() {
+    const { topColor, topMenu } = this
+    return {
+      backgroundColor: topColor,
+      cursor: 'pointer',
+      height: '30px',
+      width: '30px',
+      borderRadius: topMenu ? '50%' : '4px',
+      }
+    },
+    bottomSwatchStyle() {
+      const { bottomColor, bottomMenu } = this
+      return {
+        backgroundColor: bottomColor,
+        cursor: 'pointer',
+        height: '30px',
+        width: '30px',
+        borderRadius: bottomMenu ? '50%' : '4px',
+        }
+      }
   },
   methods: {
     Preview_image() {
@@ -24,13 +51,13 @@ Vue.component('memegenerator', {
 
             <v-container style="position:absolute;top:0px">
               <v-row align="center" justify="space-around">
-                <div v-bind:style="{ fontSize: topSize + 'px' }" class="white--text mx-2">{{ topText }}</div>
+                <div v-bind:style="{ fontSize: topSize + 'px', color: topColor }">{{ topText }}</div>
               </v-row>
             </v-container>
 
             <v-container style="position:absolute;bottom:0px">
               <v-row align="center" justify="space-around">
-                <div v-bind:style="{ fontSize: bottomSize + 'px' }" class="white--text mx-2">{{ bottomText }}</div>
+                <div v-bind:style="{ fontSize: bottomSize + 'px', color: bottomColor }">{{ bottomText }}</div>
               </v-row>
             </v-container>
 
@@ -60,6 +87,21 @@ Vue.component('memegenerator', {
             outlined
           ></v-text-field>
 
+          <v-text-field v-model="topColor" label="Top Text Color" outlined>
+  					<template v-slot:append>
+  						<v-menu v-model="topMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+  							<template v-slot:activator="{ on }">
+  								<div :style="topSwatchStyle" v-on="on" />
+  							</template>
+  							<v-card>
+  								<v-card-text class="pa-0">
+  									<v-color-picker v-model="topColor" flat />
+  								</v-card-text>
+  							</v-card>
+  						</v-menu>
+  					</template>
+  				</v-text-field>
+
           <v-text-field
            label="Bottom Text"
            v-model="bottomText"
@@ -73,8 +115,23 @@ Vue.component('memegenerator', {
             type="number"
             outlined
           ></v-text-field>
-      </v-col>
 
+          <v-text-field v-model="bottomColor" label="Bottom Text Color" outlined>
+            <template v-slot:append>
+              <v-menu v-model="bottomMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                <template v-slot:activator="{ on }">
+                  <div :style="bottomSwatchStyle" v-on="on" />
+                </template>
+                <v-card>
+                  <v-card-text class="pa-0">
+                    <v-color-picker v-model="bottomColor" flat />
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+            </template>
+          </v-text-field>
+
+      </v-col>
     </v-row>
   </v-container>
   `
