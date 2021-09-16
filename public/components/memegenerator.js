@@ -3,8 +3,10 @@ Vue.component('memegenerator', {
     return {
       url: null,
       image: null,
-      top_text: null,
-      bottom_text: null,
+      topText: null,
+      bottomText: null,
+      topSize: 20,
+      bottomSize: 20,
     }
   },
   methods: {
@@ -22,13 +24,13 @@ Vue.component('memegenerator', {
 
             <v-container style="position:absolute;top:0px">
               <v-row align="center" justify="space-around">
-                <div class="white--text mx-2">{{ top_text }}</div>
+                <div v-bind:style="{ fontSize: topSize + 'px' }" class="white--text mx-2">{{ topText }}</div>
               </v-row>
             </v-container>
 
             <v-container style="position:absolute;bottom:0px">
               <v-row align="center" justify="space-around">
-                <div class="white--text mx-2">{{ bottom_text }}</div>
+                <div v-bind:style="{ fontSize: bottomSize + 'px' }" class="white--text mx-2">{{ bottomText }}</div>
               </v-row>
             </v-container>
 
@@ -46,14 +48,30 @@ Vue.component('memegenerator', {
 
           <v-text-field
            label="Top Text"
-           v-model="top_text"
+           v-model="topText"
            outlined
           ></v-text-field>
 
           <v-text-field
+            label="Top Font Size"
+            v-model="topSize"
+            suffix="px"
+            type="number"
+            outlined
+          ></v-text-field>
+
+          <v-text-field
            label="Bottom Text"
-           v-model="bottom_text"
+           v-model="bottomText"
            outlined
+          ></v-text-field>
+
+          <v-text-field
+            label="Bottom Font Size"
+            v-model="bottomSize"
+            suffix="px"
+            type="number"
+            outlined
           ></v-text-field>
       </v-col>
 
