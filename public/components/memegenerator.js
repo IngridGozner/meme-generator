@@ -3,8 +3,8 @@ Vue.component('memegenerator', {
     return {
       url: null,
       image: null,
-      top_text: "Top",
-      bottom_text: "Bottom",
+      top_text: null,
+      bottom_text: null,
     }
   },
   methods: {
@@ -37,11 +37,26 @@ Vue.component('memegenerator', {
       </v-col>
       <v-col cols="12" md="5">
          <v-file-input
+            label="Image"
             accept="image/*"
             @change="Preview_image"
             v-model="image"
+            outlined
           ></v-file-input>
+
+          <v-text-field
+           label="Top Text"
+           v-model="top_text"
+           outlined
+          ></v-text-field>
+
+          <v-text-field
+           label="Bottom Text"
+           v-model="bottom_text"
+           outlined
+          ></v-text-field>
       </v-col>
+
     </v-row>
   </v-container>
   `
