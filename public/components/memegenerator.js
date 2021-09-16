@@ -12,6 +12,10 @@ Vue.component('memegenerator', {
 		  topMenu: false,
       bottomColor: '#000000FF',
       bottomMenu: false,
+
+      fonts: ["Arial", "Comic Sans", "Pacifico"],
+      topFont: "Arial",
+      bottomFont: "Arial",
     }
   },
   computed: {
@@ -51,13 +55,13 @@ Vue.component('memegenerator', {
 
             <v-container style="position:absolute;top:0px">
               <v-row align="center" justify="space-around">
-                <div v-bind:style="{ fontSize: topSize + 'px', color: topColor }">{{ topText }}</div>
+                <div v-bind:style="{ fontSize: topSize + 'px', color: topColor, fontFamily: topFont }">{{ topText }}</div>
               </v-row>
             </v-container>
 
             <v-container style="position:absolute;bottom:0px">
               <v-row align="center" justify="space-around">
-                <div v-bind:style="{ fontSize: bottomSize + 'px', color: bottomColor }">{{ bottomText }}</div>
+                <div v-bind:style="{ fontSize: bottomSize + 'px', color: bottomColor, fontFamily: bottomFont }">{{ bottomText }}</div>
               </v-row>
             </v-container>
 
@@ -102,6 +106,13 @@ Vue.component('memegenerator', {
   					</template>
   				</v-text-field>
 
+          <v-select
+            :items="fonts"
+            label="Top Text Font"
+            v-model="topFont"
+            outlined
+          ></v-select>
+
           <v-text-field
            label="Bottom Text"
            v-model="bottomText"
@@ -130,6 +141,13 @@ Vue.component('memegenerator', {
               </v-menu>
             </template>
           </v-text-field>
+
+          <v-select
+            :items="fonts"
+            label="Bottom Text Font"
+            v-model="bottomFont"
+            outlined
+          ></v-select>
 
       </v-col>
     </v-row>
