@@ -3,6 +3,7 @@ Vue.component('memegenerator', {
     return {
       url: null,
       image: null,
+
       topText: null,
       bottomText: null,
       topSize: 20,
@@ -41,9 +42,9 @@ Vue.component('memegenerator', {
       }
   },
   methods: {
-    Preview_image() {
+    preview_image() {
       this.url= URL.createObjectURL(this.image)
-    }
+    },
   },
   template:
   `
@@ -51,7 +52,7 @@ Vue.component('memegenerator', {
      <v-row>
       <v-col cols="12" md="7">
          <v-card elevation="2">
-          <v-img :src="url" :lazy-src="url">
+          <v-img id="meme" :src="url" :lazy-src="url">
 
             <v-container style="position:absolute;top:0px">
               <v-row align="center" justify="space-around">
@@ -67,12 +68,13 @@ Vue.component('memegenerator', {
 
           </v-img>
         </v-card>
+
       </v-col>
       <v-col cols="12" md="5">
          <v-file-input
             label="Image"
             accept="image/*"
-            @change="Preview_image"
+            @change="preview_image"
             v-model="image"
             outlined
           ></v-file-input>

@@ -9,13 +9,52 @@
   <div id="app">
     <theme>
       <memegenerator></memegenerator>
+      <v-row>
+        <v-col cols="6" md="3" >
+          <v-btn id="btnDownload">Download Meme</v-btn>
+        </v-col>
+        <v-col cols="6" md="3">
+          <v-select
+            :items="['JPG', 'PNG', 'GIF']"
+            v-model="download"
+            outlined
+          ></v-select>
+        </v-col>
+      </v-row>
+
     </theme>
   </div>
 
+
+
 </body>
 <script type="text/javascript" src="../components/memegenerator.js"></script>
-  <%- include('../partials/footerscripts.ejs') -%>
+<%- include('../partials/footerscripts.ejs') -%>
+
 <script>
+  document.getElementById('btnDownload').addEventListener('click', function() {
+    if(vm.download === "JPG"){
+      domtoimage.toJpeg(document.getElementById('meme'))
+      .then(function (dataUrl) {
+        const link = document.createElement('a');
+        link.download = 'meme.jpg';
+        link.href = dataUrl;
+        link.click();
+      });
+    }
+    else if(vm.download === "PNG"){
+      domtoimage.toPng(document.getElementById('meme'))
+          .then(function (dataUrl) {
+            const link = document.createElement('a');
+            link.download = 'meme.png';
+            link.href = dataUrl;
+            link.click();
+          })
+    }
+    else if(vm.download === "GIF"){
+    }
+  });
+
   console.log(vm);
 </script>
 </html>
