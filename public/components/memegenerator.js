@@ -51,7 +51,7 @@ Vue.component('memegenerator', {
   <v-container fluid>
      <v-row>
       <v-col cols="12" md="7">
-         <v-card elevation="2">
+         <v-card elevation="2" width="900" color="rgba(0, 0, 0, 0.6)">
           <v-img id="meme" :src="url" :lazy-src="url">
 
             <v-container style="position:absolute;top:0px">
@@ -71,29 +71,43 @@ Vue.component('memegenerator', {
 
       </v-col>
       <v-col cols="12" md="5">
+        <v-card elevation="2" color="rgba(255, 255, 255, 0.8)">
+        <v-card-text>
          <v-file-input
-            label="Image"
+            label="Upload Image"
             accept="image/*"
             @change="preview_image"
             v-model="image"
             outlined
+            filled
+            rounded
           ></v-file-input>
+
+          <v-divider></v-divider>
 
           <v-text-field
            label="Top Text"
            v-model="topText"
            outlined
+           filled
+           rounded
           ></v-text-field>
 
+          <v-row>
+          <v-col cols="12" md="3">
           <v-text-field
-            label="Top Font Size"
+            label="Font Size"
             v-model="topSize"
             suffix="px"
             type="number"
             outlined
+            filled
+            rounded
           ></v-text-field>
+          </v-col>
 
-          <v-text-field v-model="topColor" label="Top Text Color" outlined>
+          <v-col cols="12" md="4">
+          <v-text-field v-model="topColor" label="Text Color" outlined  filled rounded>
   					<template v-slot:append>
   						<v-menu v-model="topMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
   							<template v-slot:activator="{ on }">
@@ -107,29 +121,43 @@ Vue.component('memegenerator', {
   						</v-menu>
   					</template>
   				</v-text-field>
+          </v-col>
 
+          <v-col cols="12" md="5">
           <v-select
             :items="fonts"
-            label="Top Text Font"
+            label="Text Font"
             v-model="topFont"
             outlined
+            filled
+            rounded
           ></v-select>
+          </v-col></v-row>
+
+          <v-divider></v-divider>
 
           <v-text-field
            label="Bottom Text"
            v-model="bottomText"
            outlined
-          ></v-text-field>
+           filled
+           rounded></v-text-field>
 
+          <v-row>
+          <v-col cols="12" md="3">
           <v-text-field
-            label="Bottom Font Size"
+            label="Font Size"
             v-model="bottomSize"
             suffix="px"
             type="number"
             outlined
+            filled
+            rounded
           ></v-text-field>
+          </v-col>
 
-          <v-text-field v-model="bottomColor" label="Bottom Text Color" outlined>
+          <v-col cols="12" md="4">
+          <v-text-field v-model="bottomColor" label="Text Color" outlined  filled rounded>
             <template v-slot:append>
               <v-menu v-model="bottomMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
                 <template v-slot:activator="{ on }">
@@ -143,14 +171,22 @@ Vue.component('memegenerator', {
               </v-menu>
             </template>
           </v-text-field>
+          </v-col>
 
+          <v-col cols="12" md="5">
           <v-select
             :items="fonts"
-            label="Bottom Text Font"
+            label="Text Font"
             v-model="bottomFont"
             outlined
+            filled
+            rounded
           ></v-select>
+          </v-col></v-row>
 
+          </v-card-text>
+          <v-card-actions><slot></slot></v-card>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

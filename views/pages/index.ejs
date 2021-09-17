@@ -8,24 +8,23 @@
 
   <div id="app">
     <theme>
-      <memegenerator></memegenerator>
-      <v-row>
+      <memegenerator>
+        <v-row>
         <v-col cols="6" md="3" >
-          <v-btn id="btnDownload">Download Meme</v-btn>
+          <v-btn large color="#EBE4DE" id="btnDownload">Download</v-btn>
         </v-col>
         <v-col cols="6" md="3">
           <v-select
             :items="['JPG', 'PNG', 'GIF']"
             v-model="download"
-            outlined
+            filled
+            dense
           ></v-select>
         </v-col>
       </v-row>
-
+    </memegenerator>
     </theme>
   </div>
-
-
 
 </body>
 <script type="text/javascript" src="../components/memegenerator.js"></script>
