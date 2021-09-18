@@ -3,6 +3,7 @@ Vue.component('memegenerator', {
     return {
       url: null,
       image: null,
+      canvas: null,
 
       topText: null,
       bottomText: null,
@@ -19,6 +20,11 @@ Vue.component('memegenerator', {
       bottomFont: "Arial",
     }
   },
+
+  mounted() {
+    this.canvas = document.getElementById("memeCanvas");
+  },
+
   computed: {
   topSwatchStyle() {
     const { topColor, topMenu } = this
@@ -45,30 +51,46 @@ Vue.component('memegenerator', {
     uploadImage() {
       this.url= URL.createObjectURL(this.image);
 
-      const c = document.getElementById("memeCanvas");
-      const ctx = c.getContext("2d");
+      const ctx = this.canvas.getContext("2d");
       const img = new Image;
 
       // on image load update Canvas Image
       img.onload = () => {
         //Clear Old Image and Reset Bounds
-        ctx.clearRect(0, 0, c.width, c.height);
-        c.height = img.height;
-        c.width = img.width;
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.canvas.height = img.height;
+        this.canvas.width = img.width;
+
+        console.log("width: " + this.canvas.width);
+        console.log("height: " + this.canvas.height);
 
         // Redraw Image
-        ctx.drawImage(img, 10, 10, c.width, c.height);
+        ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
       };
       img.src = this.url;
-      }
     },
+  },
+
   template:
   `
   <v-container fluid>
      <v-row>
       <v-col cols="12" md="7">
-         <v-card elevation="2">
-         <canvas id="memeCanvas" class="fullwidth" width="750px" height="620px"></canvas>
+
+      <v-card id="meme" height="canvas.height" color="rgba(0, 0, 0, 0)" elevation="0">
+         <canvas id="memeCanvas" class="fullwidth"></canvas>
+
+         <v-container style="position:absolute;top:15px">
+              <v-row align="center" justify="center">
+                <div v-bind:style="{ fontSize: topSize + 'px', color: topColor, fontFamily: topFont }">{{ topText }}</div>
+              </v-row>
+            </v-container>
+
+            <v-container style="position:absolute; bottom:15px">
+              <v-row align="center" justify="center">
+                <div v-bind:style="{ fontSize: bottomSize + 'px', color: bottomColor, fontFamily: bottomFont }">{{ bottomText }}</div>
+              </v-row>
+            </v-container>
         </v-card>
 
       </v-col>
