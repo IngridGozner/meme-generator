@@ -4,6 +4,7 @@ Vue.component('memegenerator', {
       url: null,
       image: null,
       canvas: null,
+      context: null,
 
       topText: null,
       bottomText: null,
@@ -23,6 +24,7 @@ Vue.component('memegenerator', {
 
   mounted() {
     this.canvas = document.getElementById("memeCanvas");
+    this.context = this.canvas.getContext('2d');
   },
 
   computed: {
@@ -50,24 +52,26 @@ Vue.component('memegenerator', {
   methods: {
     uploadImage() {
       this.url= URL.createObjectURL(this.image);
+      let type = this.image.type;
 
-      const ctx = this.canvas.getContext("2d");
-      const img = new Image;
+      if(type === "image/gif"){
+        gifler(this.url).animate(this.canvas)
+      }
+      else{
+        let img = new Image;
 
-      // on image load update Canvas Image
-      img.onload = () => {
-        //Clear Old Image and Reset Bounds
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.canvas.height = img.height;
-        this.canvas.width = img.width;
+        // on image load update Canvas Image
+        img.onload = () => {
+          //Clear Old Image and Reset Bounds
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.canvas.height = img.height;
+          this.canvas.width = img.width;
 
-        console.log("width: " + this.canvas.width);
-        console.log("height: " + this.canvas.height);
-
-        // Redraw Image
-        ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
-      };
-      img.src = this.url;
+          // Redraw Image
+          this.context.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+        };
+        img.src = this.url;
+      }
     },
   },
 
