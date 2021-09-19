@@ -6,10 +6,13 @@ Vue.component('memegenerator', {
       canvas: null,
       context: null,
 
+      canvasGif: null,
+      contextGif: null,
+
       topText: null,
       bottomText: null,
-      topSize: 20,
-      bottomSize: 20,
+      topSize: 70,
+      bottomSize: 70,
 
       topColor: '#000000FF',
 		  topMenu: false,
@@ -19,12 +22,17 @@ Vue.component('memegenerator', {
       fonts: ["Arial", "Comic Sans", "Pacifico"],
       topFont: "Arial",
       bottomFont: "Arial",
+
+      gif: undefined,
     }
   },
 
   mounted() {
     this.canvas = document.getElementById("memeCanvas");
     this.context = this.canvas.getContext('2d');
+
+    this.canvasGif = document.getElementById("gifCanvas");
+    this.contextGif = this.canvasGif.getContext('2d');
   },
 
   computed: {
@@ -54,12 +62,63 @@ Vue.component('memegenerator', {
       this.url= URL.createObjectURL(this.image);
       let type = this.image.type;
 
+      if(this.gif != undefined){
+        this.gif.pause();
+
+        this.contextGif.clearRect(0, 0, this.canvasGif.width, this.canvasGif.height);
+        this.gif = undefined;
+
+        //delete canvas element
+        let wrapper = document.getElementById('wrapper');
+        let canvas = document.getElementById('gifCanvas');
+
+        wrapper.removeChild(canvas);
+
+      }
+
       if(type === "image/gif"){
-        gifler(this.url).animate(this.canvas)
+
+        if(document.getElementById('gifCanvas') === null){
+
+          let wrapper = document.getElementById('wrapper');
+          let canvas = document.createElement('canvas');
+          canvas.id = 'gifCanvas';
+          canvas.className = 'fullwidth';
+
+          wrapper.appendChild(canvas);
+        }
+
+        this.canvasGif = document.getElementById("gifCanvas");
+        this.contextGif = this.canvasGif.getContext('2d');
+
+        this.contextGif.canvas.hidden = false;
+        this.context.canvas.hidden = true;
+
+        this.gif = GIFGroover();
+        this.gif.src = this.url;
+        this.gif.onload = () => {
+          this.canvasGif.width = this.gif.width; // set canvas size to match the gif.
+          this.canvasGif.height = this.gif.height;
+
+          let gif = this.gif;
+          let context = this.contextGif;
+          let canvas = this.canvasGif;
+
+          requestAnimationFrame(displayGif);    // start displaying the gif.
+
+          // Display loop
+          function displayGif(){
+              context.clearRect(0,0, canvas.width, canvas.height); // Clear in case the gif is transparent
+              context.drawImage(gif.image, 0, 0);                 // Draw the current frame
+              requestAnimationFrame(displayGif);
+          }
+        }
       }
       else{
-        let img = new Image;
+        this.contextGif.canvas.hidden = true;
+        this.context.canvas.hidden = false;
 
+        let img = new Image;
         // on image load update Canvas Image
         img.onload = () => {
           //Clear Old Image and Reset Bounds
@@ -67,7 +126,7 @@ Vue.component('memegenerator', {
           this.canvas.height = img.height;
           this.canvas.width = img.width;
 
-          // Redraw Image
+          // Draw Image
           this.context.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
         };
         img.src = this.url;
@@ -81,16 +140,17 @@ Vue.component('memegenerator', {
      <v-row>
       <v-col cols="12" md="7">
 
-      <v-card id="meme" height="canvas.height" color="rgba(0, 0, 0, 0)" elevation="0">
+      <v-card style="relative" id="wrapper" height="canvas.height" color="rgba(0, 0, 0, 0)" elevation="0">
          <canvas id="memeCanvas" class="fullwidth"></canvas>
+         <canvas id="gifCanvas" class="fullwidth"></canvas>
 
-         <v-container style="position:absolute;top:15px">
+         <v-container style="position:absolute;top:0px">
               <v-row align="center" justify="center">
                 <div v-bind:style="{ fontSize: topSize + 'px', color: topColor, fontFamily: topFont }">{{ topText }}</div>
               </v-row>
             </v-container>
 
-            <v-container style="position:absolute; bottom:15px">
+            <v-container style="position:absolute; bottom:0px">
               <v-row align="center" justify="center">
                 <div v-bind:style="{ fontSize: bottomSize + 'px', color: bottomColor, fontFamily: bottomFont }">{{ bottomText }}</div>
               </v-row>

@@ -33,7 +33,7 @@
 <script>
   document.getElementById('btnDownload').addEventListener('click', function() {
     if(vm.download === "JPG"){
-      domtoimage.toJpeg(document.getElementById('meme'))
+      domtoimage.toJpeg(document.getElementById('wrapper'))
       .then(function (dataUrl) {
         const link = document.createElement('a');
         link.download = 'meme.jpg';
@@ -42,7 +42,7 @@
       });
     }
     else if(vm.download === "PNG"){
-      domtoimage.toPng(document.getElementById('meme'))
+      domtoimage.toPng(document.getElementById('wrapper'))
           .then(function (dataUrl) {
             const link = document.createElement('a');
             link.download = 'meme.png';
@@ -51,6 +51,10 @@
           })
     }
     else if(vm.download === "GIF"){
+      const link = document.createElement("a");
+      // link.href = document.getElementById("memeCanvas").toDataURL();
+      // link.download = `meme-generator-${new Date().getTime()}.gif`;
+      // link.click();
     }
   });
 
