@@ -24,6 +24,7 @@ Vue.component('memegenerator', {
       bottomFont: "Arial",
 
       gif: undefined,
+      downloadType: 'JPG',
     }
   },
 
@@ -33,67 +34,75 @@ Vue.component('memegenerator', {
 
     this.canvasGif = document.getElementById("gifCanvas");
     this.contextGif = this.canvasGif.getContext('2d');
+
+    //hide one of the 2 canvases at the start
+    this.contextGif.canvas.hidden = true;
   },
 
   computed: {
-  topSwatchStyle() {
-    const { topColor, topMenu } = this
-    return {
-      backgroundColor: topColor,
-      cursor: 'pointer',
-      height: '30px',
-      width: '30px',
-      borderRadius: topMenu ? '50%' : '4px',
-      }
-    },
-    bottomSwatchStyle() {
-      const { bottomColor, bottomMenu } = this
+    //color pickers for top and bottom text
+    topSwatchStyle() {
+      const { topColor, topMenu } = this
       return {
-        backgroundColor: bottomColor,
+        backgroundColor: topColor,
         cursor: 'pointer',
         height: '30px',
         width: '30px',
-        borderRadius: bottomMenu ? '50%' : '4px',
+        borderRadius: topMenu ? '50%' : '4px',
         }
-      }
-  },
-  methods: {
-    uploadImage() {
-      this.url= URL.createObjectURL(this.image);
-      let type = this.image.type;
+      },
+      bottomSwatchStyle() {
+        const { bottomColor, bottomMenu } = this
+        return {
+          backgroundColor: bottomColor,
+          cursor: 'pointer',
+          height: '30px',
+          width: '30px',
+          borderRadius: bottomMenu ? '50%' : '4px',
+          }
+        }
+      },
+    methods: {
+      uploadImage() {
+        this.url= URL.createObjectURL(this.image);
+        let type = this.image.type;
 
-      if(this.gif != undefined){
-        this.gif.pause();
+        //check if it was a gif, to clear it
+        if(this.gif != undefined){
+          this.gif.pause();
 
-        this.contextGif.clearRect(0, 0, this.canvasGif.width, this.canvasGif.height);
-        this.gif = undefined;
+          this.contextGif.clearRect(0, 0, this.canvasGif.width, this.canvasGif.height);
+          this.gif = undefined;
 
-        //delete canvas element
-        let wrapper = document.getElementById('wrapper');
-        let canvas = document.getElementById('gifCanvas');
+          //delete canvas element- to be empty for the next gif
+          let wrapper = document.getElementById('wrapper');
+          let canvas = document.getElementById('gifCanvas');
 
-        wrapper.removeChild(canvas);
+          wrapper.removeChild(canvas);
+        }
 
-      }
-
+      //check the type of the uploaded image file
       if(type === "image/gif"){
 
+        //check if the gif canvas exists or not
         if(document.getElementById('gifCanvas') === null){
-
           let wrapper = document.getElementById('wrapper');
           let canvas = document.createElement('canvas');
           canvas.id = 'gifCanvas';
           canvas.className = 'fullwidth';
 
+          //add the gif canvas again to the v-card
           wrapper.appendChild(canvas);
         }
 
         this.canvasGif = document.getElementById("gifCanvas");
         this.contextGif = this.canvasGif.getContext('2d');
 
+        //show the gif canvas and hide the image canvas
         this.contextGif.canvas.hidden = false;
         this.context.canvas.hidden = true;
 
+        //createe a gif to draw all its frames on the canvas
         this.gif = GIFGroover();
         this.gif.src = this.url;
         this.gif.onload = () => {
@@ -115,6 +124,7 @@ Vue.component('memegenerator', {
         }
       }
       else{
+        //hide the gif canvas, show the image canvas if it is not a gif
         this.contextGif.canvas.hidden = true;
         this.context.canvas.hidden = false;
 
@@ -132,6 +142,51 @@ Vue.component('memegenerator', {
         img.src = this.url;
       }
     },
+
+    download(){
+        if(this.downloadType === "JPG"){
+          domtoimage.toJpeg(document.getElementById('wrapper'))
+          .then(function (dataUrl) {
+            const link = document.createElement('a');
+            link.download = `meme-${new Date().getTime()}.jpg`;
+            link.href = dataUrl;
+            link.click();
+          });
+        }
+        else if(this.downloadType === "PNG"){
+          domtoimage.toPng(document.getElementById('wrapper'))
+              .then(function (dataUrl) {
+                const link = document.createElement('a');
+                link.download = `meme-${new Date().getTime()}.png`;
+                link.href = dataUrl;
+                link.click();
+              })
+        }
+        else if(this.downloadType === "GIF" && this.contextGif.canvas.hidden === false){
+          const capturer = new CCapture( { format: 'gif', workersPath: '/js/' } );
+          let canvas = this.canvasGif;
+
+          //start capturing from the first frame of the gif
+          this.gif.seekFrame(0);
+          capturer.start();
+
+          function render(){
+          	requestAnimationFrame(render);
+          	capturer.capture( canvas );
+          }
+          render();
+
+          //duration of gif in ms
+          let gifDuration = this.gif.duration;
+
+          //after the gif was completely captured, save the gif from canvas
+          setTimeout(function() {
+            capturer.stop();
+            //default save, will download automatically a gif
+            capturer.save();
+          }, gifDuration);
+        }
+      }
   },
 
   template:
@@ -146,13 +201,13 @@ Vue.component('memegenerator', {
 
          <v-container style="position:absolute;top:0px">
               <v-row align="center" justify="center">
-                <div v-bind:style="{ fontSize: topSize + 'px', color: topColor, fontFamily: topFont }">{{ topText }}</div>
+                <div :style="{ textAlign: 'center', fontSize: topSize + 'px', color: topColor, fontFamily: topFont, width: '80%' }">{{ topText }}</div>
               </v-row>
             </v-container>
 
             <v-container style="position:absolute; bottom:0px">
               <v-row align="center" justify="center">
-                <div v-bind:style="{ fontSize: bottomSize + 'px', color: bottomColor, fontFamily: bottomFont }">{{ bottomText }}</div>
+                <div :style="{ textAlign: 'center', fontSize: bottomSize + 'px', color: bottomColor, fontFamily: bottomFont, topFont, width: '80%' }">{{ bottomText }}</div>
               </v-row>
             </v-container>
         </v-card>
@@ -273,7 +328,21 @@ Vue.component('memegenerator', {
           </v-col></v-row>
 
           </v-card-text>
-          <v-card-actions><slot></slot></v-card-actions>
+          <v-card-actions>
+          <v-row>
+            <v-col>
+              <v-btn large color="#EBE4DE" @click="download">Download</v-btn>
+            </v-col>
+            <v-col>
+              <v-select
+                :items="['JPG', 'PNG', 'GIF']"
+                v-model="downloadType"
+                filled
+                dense
+              ></v-select>
+            </v-col>
+            </v-row>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>

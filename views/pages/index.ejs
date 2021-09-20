@@ -8,21 +8,7 @@
 
   <div id="app">
     <theme>
-      <memegenerator>
-        <v-row>
-          <v-col cols="6" md="4" >
-            <v-btn large color="#EBE4DE" id="btnDownload">Download</v-btn>
-          </v-col>
-          <v-col cols="6" md="3">
-            <v-select
-              :items="['JPG', 'PNG', 'GIF']"
-              v-model="download"
-              filled
-              dense
-            ></v-select>
-          </v-col>
-      </v-row>
-    </memegenerator>
+      <memegenerator></memegenerator>
     </theme>
   </div>
 
@@ -31,43 +17,6 @@
 <%- include('../partials/footerscripts.ejs') -%>
 
 <script>
-  document.getElementById('btnDownload').addEventListener('click', function() {
-    if(vm.download === "JPG"){
-      domtoimage.toJpeg(document.getElementById('wrapper'))
-      .then(function (dataUrl) {
-        const link = document.createElement('a');
-        link.download = 'meme.jpg';
-        link.href = dataUrl;
-        link.click();
-      });
-    }
-    else if(vm.download === "PNG"){
-      domtoimage.toPng(document.getElementById('wrapper'))
-          .then(function (dataUrl) {
-            const link = document.createElement('a');
-            link.download = 'meme.png';
-            link.href = dataUrl;
-            link.click();
-          })
-    }
-    else if(vm.download === "GIF"){
-      const link = document.createElement("a");
-      // link.href = document.getElementById("memeCanvas").toDataURL();
-      // link.download = `meme-generator-${new Date().getTime()}.gif`;
-      // link.click();
-    }
-  });
-
-  // document.getElementById("btnDownload")
-  //   .addEventListener("click", () => {
-  //     const link = document.createElement("a");
-  //     link.href = document.getElementById("memeCanvas").toDataURL();
-  //     link.download = `meme-generator-${new Date().getTime()}.png`;
-  //     link.click();
-  // });
-
-
-
   console.log(vm);
 </script>
 </html>
